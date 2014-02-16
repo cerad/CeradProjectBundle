@@ -1,9 +1,9 @@
 {
-    "name":        "cerad/project-bundle",
+    "name":        "cerad/person-bundle",
     "type":        "symfony-bundle",
-    "description": "Symfony Cerad Project Bundle",
+    "description": "Symfony Cerad Person Bundle",
     "keywords":    ["cerad","zayso"],
-    "homepage":    "http://github.com/cerad/ProjectBundle",
+    "homepage":    "http://github.com/cerad/PersonBundle",
     "license":     "MIT",
     "authors": [
         {
@@ -14,11 +14,12 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "cerad/core-bundle": "dev-master"
     },
     "minimum-stability": "dev",
     "autoload": {
-        "psr-0": { "Cerad\\Bundle\\ProjectBundle\\": "" }
+        "psr-0": { "Cerad\\Bundle\\PersonBundle\\": "" }
     },
-    "target-dir": "Cerad/Bundle/ProjectBundle"
+    "target-dir": "Cerad/Bundle/PersonBundle"
 }
