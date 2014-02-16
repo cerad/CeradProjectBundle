@@ -6,14 +6,9 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Symfony\Component\HttpKernel\HttpKernel;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Cerad\Bundle\CoreBundle\Events\ProjectEvents;
 
-use Cerad\Bundle\CoreBundle\EventListener\CoreRequestListener;
-
-use Cerad\Bundle\ProjectBundle\ProjectEvents;
+use Cerad\Bundle\CoreBundle\Event\Project\FindByEvent;
 
 class ProjectEventListener extends ContainerAware implements EventSubscriberInterface
 {
@@ -21,8 +16,7 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     {
         return array
         (
-            KernelEvents::REQUEST => array(array('onKernelRequest', CoreRequestListener::ProjectEventListenerPriority)),
-
+            ProjectEvents::FindProjectById   => array('onFindProjectById'   ),
             ProjectEvents::FindProjectByKey  => array('onFindProjectByKey'  ),
             ProjectEvents::FindProjectBySlug => array('onFindProjectBySlug' ),
         );
@@ -37,40 +31,31 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     {
         return $this->container->get($this->projectRepositoryServiceId);
     }
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onFindProjectBySlug(FindByEvent $event)
     {
-        // Will a sub request ever change projects?
-        if (HttpKernel::MASTER_REQUEST != $event->getRequestType()) return;
-        
-        // Only process routes asking for a project
-        if (!$event->getRequest()->attributes->has('_project')) return;
-
-        // Pull the slug
-        $request = $event->getRequest();
-        
-        $projectSlug = $request->attributes->get('_project');
-       
-        // Query the project
-        $project = $this->getProjectRepository()->findOneBySlug($projectSlug);
-        if (!$project)
+        $project = $this->getProjectRepository()->findOneBySlug($event->getParam());
+        if ($project)
         {
-            throw new NotFoundHttpException(sprintf('Project %s not found',$projectSlug));
+             $event->setProject($project);
+             $event->stopPropagation();
         }
-        // Stash it
-        $request->attributes->set('project',$project);
-    }
-    public function onFindProjectBySlug(Event $event)
-    {
-        // Lookup
-        $event->stopPropagation();
-        $event->project = $this->getProjectRepository()->findOneBySlug($event->slug);
-        return;
     }
     public function onFindProjectByKey(Event $event)
     {
-        // Lookup
-        $event->stopPropagation();
-        $event->project = $this->getProjectRepository()->findOneByKey($event->key);
-        return;
+        $project = $this->getProjectRepository()->findOneByKey($event->getParam());
+        if ($project)
+        {
+             $event->setProject($project);
+             $event->stopPropagation();
+        }
+    }
+    public function onFindProjectById(Event $event)
+    {
+        $project = $this->getProjectRepository()->find($event->getParam());
+        if ($project)
+        {
+             $event->setProject($project);
+             $event->stopPropagation();
+        }
     }
 }
