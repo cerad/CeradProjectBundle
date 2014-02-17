@@ -4,35 +4,31 @@ parameters:
         Cerad\Bundle\ProjectBundle\EventListener\ProjectEventListener
 
 services:
+  
+    cerad_project__project_entity_manager__doctrine:
+        alias: doctrine.orm.project_entity_manager
 
-    cerad_project.repository.in_memory:
+    cerad_project__project_repository__in_memory:
         class:  Cerad\Bundle\ProjectBundle\InMemory\ProjectRepository
         arguments:  
             - '%cerad_project_project_files%'
+            
+    cerad_project__project_repository__doctrine:
+        class:  Cerad\Bundle\ProjectBundle\Doctrine\EntityRepository\ProjectRepository
+        factory_service: cerad_project__project_entity_manager__doctrine
+        factory_method:  getRepository
+        arguments:  
+            - Cerad\Bundle\ProjectBundle\Doctrine\Entity\Project
 
-    cerad_project.find_default.in_memory:
-        class:  Cerad\Bundle\ProjectBundle\InMemory\ProjectFind
-        arguments:  
-            - '@cerad_project.repository.in_memory'
-            - '%cerad_project_project_default%'
-            
-    cerad_project.project_repository:
-        alias: cerad_project.repository.in_memory
+    cerad_project__project_repository:
+        alias: cerad_project__project_repository__doctrine
         
-    cerad_project.project_current:
-        class:  Cerad\Bundle\ProjectBundle\Model\Project
-        factory_class: Cerad\Bundle\ProjectBundle\InMemory\ProjectCurrent
-        factory_method: get
-        arguments:  
-            - '@cerad_project.repository.in_memory'
-            - '%cerad_project_project_default%'
-            
-    cerad_project__project_event_listener:
+    cerad_project__project__event_listener:
         class: '%cerad_project__project_event_listener__class%'
         calls:
              - [setContainer, ['@service_container']]
         tags:
             - { name: kernel.event_subscriber }
         arguments:
-            - 'cerad_project.project_repository'
+            - 'cerad_project__project_repository'
  

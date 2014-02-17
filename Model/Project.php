@@ -6,43 +6,41 @@ namespace Cerad\Bundle\ProjectBundle\Model;
  */
 class Project
 {
-    protected $id;
+    protected $key;
     
     protected $slug;
-    
-    protected $slugs; // TODO: Remove after s1games
-    
-    protected $status;
-    protected $verified;
+    protected $slugPrefix;
+    protected $role;
                 
-    protected $fedId;     // AYSO
-    protected $fedRoleId; // AYSOV
+    protected $fed;     // AYSO
+    protected $fedOrg;  // USSF_AL
+    protected $fedRole; // AYSOV
     
-    protected $results;  // s1games, s5games, natgames etc
-    
-    protected $title;
+    protected $name;
     protected $desc;
     
-    protected $submit;
-    protected $prefix;
+    protected $season;
+    protected $sport;
+    protected $domain;
+    protected $domainSub;
+    
+    protected $status;
+    
     protected $assignor;
     
+    protected $info;
     protected $basic;
-    protected $searches;
+    protected $search;
     
-    public function getId      () { return $this->id;       }
-    public function getKey     () { return $this->id;       }
-    public function getSlugx   () { return $this->slug;     }
-    public function getSlugs   () { return $this->slugs;    }
+    public function getId        () { return $this->id;         }
+    public function getKey       () { return $this->key;        }
+    public function getSlug      () { return $this->slug;       }
+    public function getSlugPrefix() { return $this->slugPrefix; }
+
     public function getStatus  () { return $this->status;   }
-    public function getVerified() { return $this->verified; }
     
-    public function getFed     () { return $this->fedId;     }
-    public function getFedRole () { return $this->fedRoleId; }
-    
-    public function getFedId     () { return $this->fedId;     }
-    public function getFedRoleId () { return $this->fedRoleId; }
-    public function getResults   () { return $this->results;   }
+    public function getFed     () { return $this->fed;     }
+    public function getFedRole () { return $this->fedRole; }
     
     public function getDesc () { return $this->desc;  }
     public function getTitle() { return $this->title; }
@@ -51,37 +49,36 @@ class Project
     public function getPrefix()   { return $this->prefix; }
     public function getAssignor() { return $this->assignor; }
     
-    public function getBasic() { return $this->basic; }
+    // Stored as arrays
+    public function getInfo  () { return $this->info;  } // Maybe pull from member variables
+    public function getBasic () { return $this->basic; }
+    public function getSearch() { return $this->search; }
     
-    public function getSearches() { return $this->searches; }
-    
-    public function __construct($config)
+    public function __construct($meta = null)
     {   
-        $info = $config['info'];
-        // Take whatever we have and apply it
+        if ($meta) $this->setMeta($meta);
+    }
+    public function isActive() { return ('Active' == $this->status) ? true: false; }
+    
+    /* =======================================================
+     * The meta subsystem allows loading from yaml
+     */
+    protected $meta;
+    public function getMeta() { return $this->meta; }
+    public function setMeta(array $meta)
+    {
+        $this->meta = $meta;
+        
+        $info = $meta['info'];
+        
         foreach($info as $propName => $propValue)
         {
             $this->$propName = $propValue;
         }
-        unset($config['info']);
-        foreach($config as $name => $value)
+        foreach($meta as $name => $value)
         {
             $this->$name = $value;
-        }
-    }
-    public function isActive() { return ('Active' == $this->status) ? true: false; }
-    
-    /* =====================================================
-     * Want to stay backwards compatible for just a bit
-     * AppTourns needs this
-     */
-    public function getSlug()
-    {
-        if ($this->slug) return $this->slug;
-        
-        if (is_array($this->slugs)) return $this->slugs[0];
-        
-        return null;
+        }   
     }
 }
 ?>

@@ -1,0 +1,109 @@
+Cerad\Bundle\ProjectBundle\Doctrine\Entity\Project:
+    type:  entity
+    table: projects
+    repositoryClass: Cerad\Bundle\ProjectBundle\Doctrine\EntityRepository\ProjectRepository
+    
+    indexes:
+       projectSeasonIndex:
+           columns: season
+       projectSportIndex:
+           columns: sport
+       projectDomainIndex:
+           columns: domain
+       projectDomainSubIndex:  # Review
+           columns: domainSub
+       projectSlugPrefixStatusIndex:
+           columns: slugPrefix,status
+        
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    
+    fields:
+        key:
+            column: keyx
+            type:   string
+            length: 80
+            unique: true
+            
+        slug:
+            column:   slug
+            type:     string
+            length:   40
+            unique:   true
+            nullable: true
+            
+        slugPrefix:
+            column:   slugPrefix
+            type:     string
+            length:   40
+            nullable: true
+            
+        role:
+            column:   role
+            type:     string
+            length:   40
+            nullable: true
+            
+        name:
+            column:   name
+            type:     string
+            length:   40
+            nullable: true
+            
+        desc:
+            column:   descx
+            type:     string
+            length:   80
+            nullable: true
+
+# =====================================
+        fed:
+            column:   fed
+            type:     string
+            length:   20
+            nullable: true
+            
+        fedOrg:
+            column:   fedOrg
+            type:     string
+            length:   20
+            nullable: true
+            
+        fedRole:
+            column:   fedRole
+            type:     string
+            length:   20
+            nullable: true
+
+# =====================================
+        season:
+            column:   season
+            type:     string
+            length:   20
+            nullable: false
+            
+        sport:
+            column:   sport
+            type:     string
+            length:   20
+            nullable: false
+            
+        domain:
+            column:   domain
+            type:     string
+            length:   20
+            nullable: false
+            
+        domainSub:
+            column:   domainSub
+            type:     string
+            length:   40
+            nullable: false
+            
+        status:
+            column:   status
+            type:     string
+            length:   20
+            nullable: true

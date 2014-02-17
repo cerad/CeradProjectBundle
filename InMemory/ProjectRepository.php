@@ -4,9 +4,9 @@ namespace Cerad\Bundle\ProjectBundle\InMemory;
 use Symfony\Component\Yaml\Yaml;
 
 use Cerad\Bundle\ProjectBundle\Model\Project;
-use Cerad\Bundle\ProjectBundle\Model\ProjectRepositoryInterface;
+//  Cerad\Bundle\ProjectBundle\Model\ProjectRepositoryInterface;
 
-class ProjectRepository implements ProjectRepositoryInterface
+class ProjectRepository // implements ProjectRepositoryInterface
 {
     protected $projects;
     
@@ -20,7 +20,8 @@ class ProjectRepository implements ProjectRepositoryInterface
             foreach($configs as $config)
             {
                 $project = new Project($config);
-                $projects[$project->getId()] = $project;
+                $project->setMeta($config);
+                $projects[$project->getKey()] = $project;
             }
         }
         $this->projects = $projects;
@@ -42,19 +43,10 @@ class ProjectRepository implements ProjectRepositoryInterface
         }
         return $projects;
     }
-    // TODO: remove after s1games
-    public function findBySlug($slug)
-    {
-        foreach($this->projects as $project)
-        {
-            foreach($project->getSlugs() as $slugx)
-            {
-                if ($slug == $slugx) return $project;
-            }
-        }
-        return null;
-    }
-    public function findOneBySlug($slug)
+    /* ======================================================
+     * This will match either the full slug or an active slugPrefix
+     */
+    public function findProjectBySlug($slug)
     {
         $slug = trim(strtolower($slug));
         if (!$slug) return null;
@@ -67,9 +59,9 @@ class ProjectRepository implements ProjectRepositoryInterface
             
             if (!$project->isActive()) break;
 
-            $slugDash = $slug . '-';
+            $slugPrefix = strtolower($project->getSlug());
             
-            if ($slugDash == substr($slugProject,0,strlen($slugDash))) return $project;
+            if ($slug == $slugPrefix) return $project;
         }
         return null;
      }

@@ -16,6 +16,7 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     {
         return array
         (
+            ProjectEvents::FindProject       => array('onFindProject'       ),
             ProjectEvents::FindProjectById   => array('onFindProjectById'   ),
             ProjectEvents::FindProjectByKey  => array('onFindProjectByKey'  ),
             ProjectEvents::FindProjectBySlug => array('onFindProjectBySlug' ),
@@ -33,7 +34,7 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     }
     public function onFindProjectBySlug(FindByEvent $event)
     {
-        $project = $this->getProjectRepository()->findOneBySlug($event->getParam());
+        $project = $this->getProjectRepository()->findProjectBySlug($event->getParam());
         if ($project)
         {
              $event->setProject($project);
@@ -42,7 +43,7 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     }
     public function onFindProjectByKey(Event $event)
     {
-        $project = $this->getProjectRepository()->findOneByKey($event->getParam());
+        $project = $this->getProjectRepository()->findProjectByKey($event->getParam());
         if ($project)
         {
              $event->setProject($project);
@@ -51,7 +52,16 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     }
     public function onFindProjectById(Event $event)
     {
-        $project = $this->getProjectRepository()->find($event->getParam());
+        $project = $this->getProjectRepository()->findProjectById($event->getParam());
+        if ($project)
+        {
+             $event->setProject($project);
+             $event->stopPropagation();
+        }
+    }
+    public function onFindProject(Event $event)
+    {
+        $project = $this->getProjectRepository()->findProject($event->getParam());
         if ($project)
         {
              $event->setProject($project);

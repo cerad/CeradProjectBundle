@@ -1,6 +1,7 @@
 <?php
 namespace Cerad\Bundle\ProjectBundle\Model;
 
+// Not currently used
 interface ProjectRepositoryInterface
 {
     public function find($id);
