@@ -52,6 +52,20 @@ class LoadProjectCommand extends ContainerAwareCommand
             return;
         }
         echo sprintf("Doctrine project was found.\n");
+        
+        // Dates access
+        $dates = $projectDoctrine->getDates();
+        foreach($dates as $date)
+        {
+            echo sprintf("Date %s %s %d %s\n",$date->getDate(),$date->getLabel(),$date->getLodging(),$date->getAvail());
+        }
+        // Assignor access
+        $assignor = $projectDoctrine->getAssignor();
+        echo sprintf("Assignor: %s\n",$assignor->getName());
+        
+        $assignor->setName('ART HUNDIAK');
+        $projectDoctrine->setAssignor($assignor);
+        $projectRepoDoctrine->flush();
     }
  }
 ?>

@@ -1,9 +1,7 @@
 <?php
+
 namespace Cerad\Bundle\ProjectBundle\Model;
 
-/* =====================================================
- * TODO: Change fedId and fedRoleId to fed and fedRole
- */
 class Project
 {
     protected $key;
@@ -27,6 +25,7 @@ class Project
     protected $status;
     
     protected $assignor;
+    protected $dates;  // Array of dates
     
     protected $info;
     protected $basic;
@@ -47,7 +46,6 @@ class Project
     
     public function getSubmit()   { return $this->submit; }
     public function getPrefix()   { return $this->prefix; }
-    public function getAssignor() { return $this->assignor; }
     
     // Stored as arrays
     public function getInfo  () { return $this->info;  } // Maybe pull from member variables
@@ -60,6 +58,36 @@ class Project
     }
     public function isActive() { return ('Active' == $this->status) ? true: false; }
     
+    /* =======================================================
+     * Assignore are value objects
+     * Stored internally as arrays
+     * Client needs to remember to do a setAssignor after changing data
+     * 
+     * Keep it real simple for now, 
+     * Doing multiple getAssignor/setAssignor will cause data sync issues
+     */
+    public function getAssignor() 
+    { 
+        return new ProjectAssignor($this->assignor);
+    }
+    public function setAssignor(ProjectAssignor $assignor)
+    {
+        $this->assignor = $assignor->getData();
+    }
+    /* =======================================================
+     * Dates is an array of ProjectDates
+     * Should they be keyed or not?
+     */
+    public function getDates()
+    {
+        $dates = array();
+        foreach($this->dates as $date)
+        {
+            $projectDate = new ProjectDate($date);
+            $dates[$projectDate->getDate()] = $projectDate;
+        }
+        return $dates;
+    }
     /* =======================================================
      * The meta subsystem allows loading from yaml
      */

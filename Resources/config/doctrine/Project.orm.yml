@@ -107,3 +107,14 @@ Cerad\Bundle\ProjectBundle\Doctrine\Entity\Project:
             type:     string
             length:   20
             nullable: true
+
+        assignor:
+            column:   assignor
+            type:     array    # TODO: Figure out how to use json
+            nullable: true
+            
+        dates:
+            column:   dates
+            type:     array
+            nullable: true
+            
