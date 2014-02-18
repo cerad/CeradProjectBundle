@@ -4,7 +4,9 @@ namespace Cerad\Bundle\ProjectBundle\Model;
 
 // Second try at making a value object
 class ProjectAssignor
-{
+{   
+    protected $project;
+    
     protected $name;
     protected $email;
     protected $phone;
@@ -15,9 +17,10 @@ class ProjectAssignor
     // Suppose could use reflection
     protected $map = array('name','email','phone','submit','prefix');
     
-    public function __construct($data = null)
+    public function __construct(Project $project)
     {
-        if (!$data) return;
+        $this->project = $project;
+        $data = $project->getRawAssignor();
         
         foreach($this->map as $key)
         {

@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputInterface;
 //  Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Cerad\Bundle\ProjectBundle\Model\ProjectPlan;
+
 class LoadProjectCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -51,8 +53,12 @@ class LoadProjectCommand extends ContainerAwareCommand
             echo sprintf("Project added to doctrine.\n");
             return;
         }
-        echo sprintf("Doctrine project was found.\n");
-        
+        else
+        {
+            sprintf("Doctrine project was found.\n");
+            $projectDoctrine->setMeta($projectInMemory->getMeta());
+            $projectRepoDoctrine->flush();
+        }
         // Dates access
         $dates = $projectDoctrine->getDates();
         foreach($dates as $date)
@@ -66,6 +72,30 @@ class LoadProjectCommand extends ContainerAwareCommand
         $assignor->setName('ART HUNDIAK');
         $projectDoctrine->setAssignor($assignor);
         $projectRepoDoctrine->flush();
+        
+        $plan = $projectDoctrine->getPlan();
+        $lodging = $plan[ProjectPlan::PlanLodging];
+        foreach($lodging['items'] as $key => $item)
+        {
+            echo sprintf("Lodge %s %s %s\n",$key,$item['date'],$item['label']);
+        }
+        $avail = $plan[ProjectPlan::PlanAvailability];
+        foreach($avail['items'] as $key => $item)
+        {
+            echo sprintf("Avail %s %s %s\n",$key,$item['date'],$item['label']);
+          //print_r($item['choices']);
+        }
+        foreach($plan as $key => $item)
+        {
+            echo sprintf("Plan Item %-20s %s\n",$key,$item['type']);
+        }
+        echo sprintf("Plan Item Count %d\n",count($plan));
+        
+        $refereeLevel = $plan['refereeLevel'];
+        echo sprintf("Referee Level '%s' %s\n",$refereeLevel['label'],$refereeLevel['default']);
+        
+        $comfortLevelCenter = $plan['comfortLevelCenter'];
+        echo sprintf("Comfort Level Center '%s' %s\n",$comfortLevelCenter['label'],$comfortLevelCenter['default']);
     }
  }
 ?>

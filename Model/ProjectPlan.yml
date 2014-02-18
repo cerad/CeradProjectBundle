@@ -1,0 +1,47 @@
+# =============================================
+# Predefined ProjectPlan properties
+#
+# TODO: Add lodging and avail collections
+refereeLevel:
+  type:    select
+  label:   Level to Referee At
+  default: Competitive
+  choices: { Competitive: Competitive, Elite: Elite, Recreational: Recreational }
+                                                
+comfortLevelCenter:
+  type:    select
+  label:   Comfort Level To Center
+  default: U10
+  choices: { U10: U10, U12: U12, U14: U14, U16: U16, U19: U19 }
+                        
+comfortLevelAssist:
+  type:    select
+  label:   Comfort Level To Assist
+  default: U10
+  choices: { U10: U10, U12: U12, U14: U14, U16: U16, U19: U19 }
+                        
+requestAssessment:
+  type:      radio
+  label:     Assessment Request
+  choices:  {None: None, Informal: Informal, Formal: Formal}
+  default:   None
+
+# This shoud be part of lodging
+lodgingWith:   { type: text, label: Lodging With,   size: 30 }
+
+# Could be part of lodging
+travelingWith: { type: text, label: Traveling With, size: 30 }
+travelingFrom: { type: text, label: Traveling From, size: 30 }
+                    
+teamClubAffilation:
+  type:    select
+  label:   Team/Club Affiliation
+  default: None
+  choices: 
+    None: None
+    Yes1: Club/Team is     in this tournament
+    Yes2: Club/Team is NOT in this tournament
+                        
+teamClubName: { type: text, label: Team/Club Name, size: 30 }
+                             
+notes: { type: textarea, label: Notes, rows: 5, cols: 50}

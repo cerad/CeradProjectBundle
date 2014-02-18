@@ -27,8 +27,7 @@ class Project
     protected $assignor;
     protected $dates;  // Array of dates
     
-    protected $info;
-    protected $basic;
+    protected $plan;
     protected $search;
     
     public function getId        () { return $this->id;         }
@@ -48,8 +47,6 @@ class Project
     public function getPrefix()   { return $this->prefix; }
     
     // Stored as arrays
-    public function getInfo  () { return $this->info;  } // Maybe pull from member variables
-    public function getBasic () { return $this->basic; }
     public function getSearch() { return $this->search; }
     
     public function __construct($meta = null)
@@ -66,9 +63,10 @@ class Project
      * Keep it real simple for now, 
      * Doing multiple getAssignor/setAssignor will cause data sync issues
      */
+    public function getRawAssignor() { return $this->assignor; }
     public function getAssignor() 
     { 
-        return new ProjectAssignor($this->assignor);
+        return new ProjectAssignor($this);
     }
     public function setAssignor(ProjectAssignor $assignor)
     {
@@ -78,17 +76,17 @@ class Project
      * Dates is an array of ProjectDates
      * Should they be keyed or not?
      */
-    public function getDates()
-    {
-        $dates = array();
-        foreach($this->dates as $date)
-        {
-            $projectDate = new ProjectDate($date);
-            $dates[$projectDate->getDate()] = $projectDate;
-        }
-        return $dates;
-    }
+    public function getRawDates() { return $this->dates; }
+    public function getDates()    { return new ProjectDates($this); }
+
     /* =======================================================
+     * Plan is an array, no wrapping in an object for now but
+     * Want to tweak it to merge in date information
+     */
+    public function getRawPlan() { return $this->plan; }
+    public function getPlan()    { return new ProjectPlan($this); }
+        
+     /* =======================================================
      * The meta subsystem allows loading from yaml
      */
     protected $meta;
@@ -97,12 +95,6 @@ class Project
     {
         $this->meta = $meta;
         
-        $info = $meta['info'];
-        
-        foreach($info as $propName => $propValue)
-        {
-            $this->$propName = $propValue;
-        }
         foreach($meta as $name => $value)
         {
             $this->$name = $value;

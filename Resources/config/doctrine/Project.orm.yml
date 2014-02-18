@@ -118,3 +118,13 @@ Cerad\Bundle\ProjectBundle\Doctrine\Entity\Project:
             type:     array
             nullable: true
             
+        plan:
+            column:   plan
+            type:     array
+            nullable: true
+            
+        search:
+            column:   search
+            type:     array
+            nullable: true
+            

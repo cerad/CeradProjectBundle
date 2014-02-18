@@ -15,14 +15,11 @@ class ProjectRepository // implements ProjectRepositoryInterface
         $projects = array();
         foreach($files as $file)
         {
-            $configs = Yaml::parse(file_get_contents($file));
+            $meta = Yaml::parse(file_get_contents($file));
             
-            foreach($configs as $config)
-            {
-                $project = new Project($config);
-                $project->setMeta($config);
-                $projects[$project->getKey()] = $project;
-            }
+            $project = new Project();
+            $project->setMeta($meta);
+            $projects[$project->getKey()] = $project;
         }
         $this->projects = $projects;
     }
