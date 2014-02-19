@@ -17,9 +17,10 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
         return array
         (
             ProjectEvents::FindProject       => array('onFindProject'       ),
-            ProjectEvents::FindProjectById   => array('onFindProjectById'   ),
-            ProjectEvents::FindProjectByKey  => array('onFindProjectByKey'  ),
-            ProjectEvents::FindProjectBySlug => array('onFindProjectBySlug' ),
+            
+          //ProjectEvents::FindProjectById   => array('onFindProjectById'   ),
+          //ProjectEvents::FindProjectByKey  => array('onFindProjectByKey'  ),
+          //ProjectEvents::FindProjectBySlug => array('onFindProjectBySlug' ),
         );
     }
     protected $projectRepositoryServiceId;
@@ -32,6 +33,18 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     {
         return $this->container->get($this->projectRepositoryServiceId);
     }
+    public function onFindProject(Event $event)
+    {
+        $project = $this->getProjectRepository()->findProject($event->getParam());
+        if ($project)
+        {
+             $event->setProject($project);
+             $event->stopPropagation();
+        }
+    }
+    /* =======================================================
+     * Really don't see any reason to expose the rest of these
+     */
     public function onFindProjectBySlug(FindByEvent $event)
     {
         $project = $this->getProjectRepository()->findProjectBySlug($event->getParam());
@@ -53,15 +66,6 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     public function onFindProjectById(Event $event)
     {
         $project = $this->getProjectRepository()->findProjectById($event->getParam());
-        if ($project)
-        {
-             $event->setProject($project);
-             $event->stopPropagation();
-        }
-    }
-    public function onFindProject(Event $event)
-    {
-        $project = $this->getProjectRepository()->findProject($event->getParam());
         if ($project)
         {
              $event->setProject($project);

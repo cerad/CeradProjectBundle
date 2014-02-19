@@ -35,16 +35,15 @@ class Project
     public function getSlug      () { return $this->slug;       }
     public function getSlugPrefix() { return $this->slugPrefix; }
 
-    public function getStatus  () { return $this->status;   }
+    public function getStatus() { return $this->status;   }
     
-    public function getFed     () { return $this->fed;     }
-    public function getFedRole () { return $this->fedRole; }
+    public function getFed    () { return $this->fed;     }
+    public function getFedOrg () { return $this->fedOrg;  }
+    public function getFedRole() { return $this->fedRole; }
     
-    public function getDesc () { return $this->desc;  }
-    public function getTitle() { return $this->title; }
-    
-    public function getSubmit()   { return $this->submit; }
-    public function getPrefix()   { return $this->prefix; }
+    public function getName() { return $this->name; }
+    public function getDesc() { return $this->desc; }
+
     
     // Stored as arrays
     public function getSearch() { return $this->search; }
