@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Cerad\Bundle\CoreBundle\Events\ProjectEvents;
 
-use Cerad\Bundle\CoreBundle\Event\Project\FindByEvent;
+use Cerad\Bundle\CoreBundle\Event\FindPROJECTEvent;
 
 class ProjectEventListener extends ContainerAware implements EventSubscriberInterface
 {
@@ -33,9 +33,9 @@ class ProjectEventListener extends ContainerAware implements EventSubscriberInte
     {
         return $this->container->get($this->projectRepositoryServiceId);
     }
-    public function onFindProject(Event $event)
+    public function onFindProject(fINDpROJECTEvent $event)
     {
-        $project = $this->getProjectRepository()->findProject($event->getParam());
+        $project = $this->getProjectRepository()->findProject($event->getSearch());
         if ($project)
         {
              $event->setProject($project);
