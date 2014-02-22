@@ -9,20 +9,37 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Cerad\Bundle\ProjectBundle\Model\ProjectPlan;
 
+use Symfony\Component\Yaml\Yaml;
+
 class LoadProjectCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this
-            ->setName       ('cerad_project__project_load')
-            ->setDescription('Load a project from yaml file')
-            ->addArgument   ('slug', InputArgument::REQUIRED, 'Project Slug')
-        ;
+        $this->setName       ('cerad_project__project__load');
+        $this->setDescription('Load a project from yaml file');
+        $this->addArgument   ('file', InputArgument::REQUIRED, 'Project File');
     }
     protected function getService  ($id)   { return $this->getContainer()->get($id); }
     protected function getParameter($name) { return $this->getContainer()->getParameter($name); }
     
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $file = $input->getArgument('file');
+        $projectMeta = Yaml::parse(file_get_contents($file));
+        $projectKey  = $projectMeta['key'];
+        
+        $projectRepo = $this->getService('cerad_project__project_repository__doctrine');
+        
+        $project = $projectRepo->findProjectByKey($projectKey);
+        if (!$project) $project = $projectRepo->createProject();
+        
+        $project->setMeta($projectMeta);
+        $projectRepo->persist($project);
+        $projectRepo->flush();
+        
+        echo sprintf("Loaded %s %s\n",$file,$project->getSlug());
+    }
+    protected function executeSlug(InputInterface $input, OutputInterface $output)
     {
         $projectSlug= $input->getArgument('slug');
         
